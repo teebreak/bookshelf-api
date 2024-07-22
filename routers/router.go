@@ -20,5 +20,8 @@ func Router() *mux.Router {
 	api.HandleFunc("/books/{id}", handlers.UpdateBook).Methods("PUT")
 	api.HandleFunc("/books/{id}", handlers.DeleteBook).Methods("DELETE")
 
+	api.HandleFunc("/books/index", handlers.IndexBook).Methods("POST")
+	api.HandleFunc("/books/search/{query}", handlers.SearchBooks).Methods("GET")
+
 	return router
 }

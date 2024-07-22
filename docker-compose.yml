@@ -13,12 +13,28 @@ services:
       test: ["CMD-SHELL", "pg_isready -d main -U admin"]
       interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 10
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+
+  elasticsearch:
+    image: elasticsearch:7.17.22
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200 || exit 1" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   app:
     build: .
@@ -32,11 +48,15 @@ services:
       DB_PORT: ${DB_PORT}
       REDIS_HOST: redis:6379
       REDIS_PASSWORD:
+      ES_HOST: http://elasticsearch:9200
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
+  esdata:
   db_data:

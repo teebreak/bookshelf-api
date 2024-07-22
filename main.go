@@ -10,6 +10,7 @@ import (
 func main() {
 	database.Connect()
 	database.InitRedis()
+	database.InitElasticsearch()
 
 	r := routers.Router()
 	log.Println("Server is running on port 8080")
