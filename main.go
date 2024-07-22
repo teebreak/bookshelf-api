@@ -9,6 +9,8 @@ import (
 
 func main() {
 	database.Connect()
+	database.InitRedis()
+
 	r := routers.Router()
 	log.Println("Server is running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
