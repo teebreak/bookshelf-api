@@ -14,7 +14,13 @@ import (
 
 func IndexBook(w http.ResponseWriter, r *http.Request) {
 	var book models.Book
-	json.NewDecoder(r.Body).Decode(&book)
+	err := json.NewDecoder(r.Body).Decode(&book)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("Indexing book: %+v", book)
 
 	body, err := json.Marshal(book)
 	if err != nil {
@@ -34,8 +40,20 @@ func IndexBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 
+	if res.IsError() {
+		var e map[string]interface{}
+		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
+			log.Fatalf("Error parsing the response body: %s", err)
+		}
+		log.Fatalf("[%s] %s: %s",
+			res.Status(),
+			e["error"].(map[string]interface{})["type"],
+			e["error"].(map[string]interface{})["reason"],
+		)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
+	json.NewEncoder(w).Encode(map[string]string{"result": "book indexed"})
 }
 
 func SearchBooks(w http.ResponseWriter, r *http.Request) {
