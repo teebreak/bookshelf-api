@@ -52,7 +52,6 @@ func IndexBook(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"result": "book indexed"})
 }
 
@@ -107,6 +106,5 @@ func SearchBooks(w http.ResponseWriter, r *http.Request) {
 		books[i] = hit.Source
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(books)
 }
