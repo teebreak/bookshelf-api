@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bookshelf-api/database"
+	"bookshelf-api/repositories"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -14,7 +16,9 @@ type BookHandler struct {
 	bookService services.BookService
 }
 
-func NewBookHandler(bookService services.BookService) *BookHandler {
+func NewBookHandler() *BookHandler {
+	bookRepo := repositories.NewBookRepository(database.DB)
+	bookService := services.NewBookService(bookRepo)
 	return &BookHandler{bookService: bookService}
 }
 

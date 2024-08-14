@@ -1,18 +1,13 @@
 package routers
 
 import (
-	"bookshelf-api/database"
 	"bookshelf-api/handlers"
 	"bookshelf-api/middlewares"
-	"bookshelf-api/repositories"
-	"bookshelf-api/services"
 	"github.com/gorilla/mux"
 )
 
 func Router() *mux.Router {
-	bookRepo := repositories.NewBookRepository(database.DB)
-	bookService := services.NewBookService(bookRepo)
-	bookHandler := handlers.NewBookHandler(bookService)
+	bookHandler := handlers.NewBookHandler()
 
 	router := mux.NewRouter()
 	router.Use(middlewares.JSONMiddleware)
